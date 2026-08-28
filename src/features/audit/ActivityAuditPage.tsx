@@ -147,7 +147,7 @@ export function ActivityAuditPage() {
         />
         <Input.Search
           allowClear
-          placeholder="Search user, company, IP"
+          placeholder={isSuperAdmin ? 'Search user, company, IP' : 'Search user, company'}
           style={{ maxWidth: 260 }}
           onSearch={(value) => {
             setSearch(value.trim());
@@ -164,7 +164,7 @@ export function ActivityAuditPage() {
         pageSize={50}
         total={query.data?.total ?? 0}
         onPageChange={(next) => setPage(next)}
-        scroll={{ x: 1400 }}
+        scroll={{ x: isSuperAdmin ? 1400 : 1100 }}
         columns={[
           {
             title: 'When',
@@ -194,7 +194,16 @@ export function ActivityAuditPage() {
               <Tag color={value ? 'green' : 'red'}>{value ? 'Yes' : 'No'}</Tag>
             ),
           },
-          { title: 'IP', dataIndex: 'ipAddress', width: 120, render: (v?: string | null) => v ?? '—' },
+          ...(isSuperAdmin
+            ? [
+                {
+                  title: 'IP',
+                  dataIndex: 'ipAddress',
+                  width: 120,
+                  render: (v?: string | null) => v ?? '—',
+                },
+              ]
+            : []),
           {
             title: 'Device',
             dataIndex: 'deviceInfo',
@@ -202,12 +211,16 @@ export function ActivityAuditPage() {
             ellipsis: true,
             render: (v?: string | null) => v ?? '—',
           },
-          {
-            title: 'Location',
-            dataIndex: 'locationInfo',
-            width: 120,
-            render: (v?: string | null) => v ?? '—',
-          },
+          ...(isSuperAdmin
+            ? [
+                {
+                  title: 'Location',
+                  dataIndex: 'locationInfo',
+                  width: 120,
+                  render: (v?: string | null) => v ?? '—',
+                },
+              ]
+            : []),
           {
             title: 'Failure',
             dataIndex: 'failureReason',
